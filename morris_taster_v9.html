@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Morris Filigree Taster - Version 9</title>
+  <!-- Load p5.js locally from the same directory -->
+  <script src="p5.min.js"></script>  
+  <style>
+    body {
+      margin: 0;
+      padding: 16px 20px;
+      background-color: #1c1917;
+      color: #e7e5e4;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      box-sizing: border-box;
+    }
+    header {
+      margin-bottom: 12px;
+    }
+    h1 {
+      margin: 0 0 4px 0;
+      font-size: 19px;
+      color: #fcd34d;
+      font-family: "Georgia", serif;
+      letter-spacing: 0.5px;
+    }
+    p {
+      margin: 0;
+      font-size: 13px;
+      color: #a8a29e;
+    }
+    .workspace-layout {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-top: 12px;
+    }
+    .controls-panel {
+      width: 320px;
+      height: 620px;
+      background-color: #292524;
+      border: 1px solid #44403c;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .panel-tabs {
+      display: flex;
+      border-bottom: 1px solid #44403c;
+      background-color: #201d1c;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 8px 2px;
+      background: transparent;
+      border: none;
+      color: #a8a29e;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    .tab-btn.active {
+      color: #fcd34d;
+      border-bottom-color: #f59e0b;
+      background-color: #292524;
+    }
+    .panel-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .panel-content.active {
+      display: flex;
+    }
+    .header-actions {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      border: none;
+      border-radius: 4px;
+      padding: 5px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .add-btn { background-color: #f59e0b; color: #1c1917; }
+    .add-btn:hover { background-color: #d97706; }
+    .io-btn { background-color: #44403c; color: #e7e5e4; }
+    .io-btn:hover { background-color: #57534e; }
+    .export-svg-btn { background-color: #059669; color: #ffffff; }
+    .export-svg-btn:hover { background-color: #047857; }
+    
+    /* Motif Cards */
+    .layers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .layer-card {
+      background-color: #1c1917;
+      border: 1px solid #3d3835;
+      border-radius: 5px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      border-left: 4px solid #78716c;
+    }
+    .layer-card.active {
+      border-color: #f59e0b;
+      background-color: #262220;
+    }
+    .layer-row-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .layer-name-input {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #e7e5e4;
+      font-size: 12px;
+      font-weight: 600;
+      width: 155px;
+      border-radius: 3px;
+      padding: 2px 4px;
+    }
+    .layer-name-input:focus {
+      background-color: #292524;
+      border-color: #78716c;
+      outline: none;
+    }
+    .delete-btn {
+      margin-left: auto;
+      background: transparent;
+      border: none;
+      color: #78716c;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 0 4px;
+    }
+    .delete-btn:hover { color: #ef4444; }
+    .layer-toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #d6d3d1;
+    }
+    .layer-toggle-row label {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .layer-param-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #a8a29e;
+    }
+    .layer-param-row input[type=range] {
+      flex: 1;
+      accent-color: #f59e0b;
+      cursor: pointer;
+    }
+    .param-label { width: 52px; }
+    .param-badge {
+      font-weight: 700;
+      color: #fcd34d;
+      min-width: 32px;
+      text-align: right;
+    }
+
+    /* Rings & Text UI */
+    .ctrl-section {
+      background-color: #1c1917;
+      border: 1px solid #3d3835;
+      border-radius: 5px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 11px;
+    }
+    .ctrl-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #fcd34d;
+      letter-spacing: 0.5px;
+    }
+    .text-input-field {
+      background-color: #292524;
+      border: 1px solid #44403c;
+      border-radius: 4px;
+      color: #e7e5e4;
+      padding: 4px 6px;
+      font-size: 12px;
+      font-family: inherit;
+      width: calc(100% - 14px);
+    }
+    .text-input-field:focus { outline: none; border-color: #f59e0b; }
+    .radio-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .radio-group label {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #d6d3d1;
+    }
+
+    /* Help & Credits Tab Styling */
+    .help-box {
+      font-size: 12px;
+      line-height: 1.55;
+      color: #d6d3d1;
+    }
+    .help-box h3 {
+      font-size: 13px;
+      color: #fcd34d;
+      margin: 10px 0 4px 0;
+      font-family: "Georgia", serif;
+    }
+    .help-box h3:first-child { margin-top: 0; }
+    .help-box p {
+      margin: 0 0 8px 0;
+      font-size: 12px;
+      color: #d6d3d1;
+    }
+    .help-box ul {
+      margin: 4px 0 10px 18px;
+      padding: 0;
+    }
+    .help-box li {
+      margin-bottom: 4px;
+    }
+    .credit-badge {
+      background-color: #201d1c;
+      border: 1px solid #44403c;
+      padding: 8px 10px;
+      border-radius: 5px;
+      margin-top: 8px;
+      border-left: 3px solid #f59e0b;
+    }
+    #sketch-holder {
+      border: 1px solid #44403c;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>William Morris Filigree Designer (V9)</h1>
+    <p>Victorian rosette generator: SVG export</p>
+  </header>
+
+  <div class="workspace-layout">
+    <div class="controls-panel">
+      <div class="panel-tabs">
+        <button id="tabMotifs" class="tab-btn active">Motifs</button>
+        <button id="tabRings" class="tab-btn">Rings</button>
+        <button id="tabText" class="tab-btn">Core Text</button>
+        <button id="tabHelp" class="tab-btn">Help & Credits</button>
+      </div>
+
+      <!-- TAB 1: MOTIFS -->
+      <div id="contentMotifs" class="panel-content active">
+        <div class="header-actions">
+          <button id="importBtn" class="btn io-btn" title="Import JSON file">Import</button>
+          <button id="exportBtn" class="btn io-btn" title="Export JSON file">JSON</button>
+          <button id="exportSvgBtn" class="btn export-svg-btn" title="Export Scalable Vector Graphics">Export SVG</button>
+          <button id="addCurveBtn" class="btn add-btn">+ Add</button>
+        </div>
+        <div id="layersList" class="layers-list"></div>
+      </div>
+
+      <!-- TAB 2: STRUCTURAL RINGS -->
+      <div id="contentRings" class="panel-content">
+        <div class="ctrl-section">
+          <span class="ctrl-section-title">Boundary Hoops</span>
+          <label style="display:flex; align-items:center; gap:6px;">
+            <input type="checkbox" id="innerHubRingToggle" checked />
+            Inner Hub Ring (<em>r</em> = 0.0 )
+          </label>
+          <div class="layer-param-row">
+            <span class="param-label">Weight:</span>
+            <input type="range" id="innerHubWeightSlider" min="1" max="8" step="0.5" value="2.5" />
+            <span id="innerHubWeightBadge" class="param-badge">2.5px</span>
+          </div>
+
+          <hr style="border:0; border-top:1px solid #3d3835; margin:4px 0;" />
+
+          <label style="display:flex; align-items:center; gap:6px;">
+            <input type="checkbox" id="outerRimRingToggle" checked />
+            Outer Perimeter Hoop (<em>r</em> = 1.0 )            
+          </label>
+          <div class="layer-param-row">
+            <span class="param-label">Weight:</span>
+            <input type="range" id="outerRimWeightSlider" min="1" max="8" step="0.5" value="2.5" />
+            <span id="outerRimWeightBadge" class="param-badge">2.5px</span>
+          </div>
+        </div>
+
+        <div class="ctrl-section">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="ctrl-section-title">Collar Rings (Seams)</span>
+            <button id="autoCollarBtn" class="btn add-btn" title="Create ring at current shared motif radius">+ Auto Seam</button>
+          </div>
+          <p style="font-size:11px; color:#78716c; margin:2px 0 6px 0;">Collars placed exactly at motif seams avoid bisecting filigree branches.</p>
+          <div id="collarsList" style="display:flex; flex-direction:column; gap:6px;"></div>
+        </div>
+      </div>
+
+      <!-- TAB 3: TEXT CORE -->
+      <div id="contentText" class="panel-content">
+        <div class="ctrl-section">
+          <span class="ctrl-section-title">Inscription Format</span>
+          <div class="radio-group">
+            <label><input type="radio" name="textMode" value="linear" checked /> Linear</label>
+            <label><input type="radio" name="textMode" value="arc" /> Arc Rim</label>
+          </div>
+        </div>
+
+        <div class="ctrl-section">
+          <span class="ctrl-section-title">Wording</span>
+          <input type="text" id="coreTextInput" class="text-input-field" value="VICTORIA & ALBERT" />
+          
+          <div class="layer-param-row">
+            <span class="param-label">Font Size:</span>
+            <input type="range" id="coreTextSizeSlider" min="8" max="28" step="1" value="13" />
+            <span id="coreTextSizeBadge" class="param-badge">13px</span>
+          </div>
+
+          <div class="layer-param-row">
+            <span class="param-label">Tracking:</span>
+            <input type="range" id="coreTextTrackingSlider" min="0" max="15" step="0.5" value="3" />
+            <span id="coreTextTrackingBadge" class="param-badge">3.0</span>
+          </div>
+
+          <div id="arcAngleRow" class="layer-param-row" style="display:none;">
+            <span class="param-label">Arc Start:</span>
+            <input type="range" id="arcStartAngleSlider" min="0" max="360" step="1" value="270" />
+            <span id="arcStartAngleBadge" class="param-badge">270°</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: HELP & CREDITS -->
+      <div id="contentHelp" class="panel-content">
+        <div class="help-box">
+          <h3>How to Design Motifs</h3>
+          <ul>
+            <li><strong>Sector Tile:</strong> Edit the active motif on the left. The vertical axis represents radius from hub (<em>r</em> = 0.0) to outer rim (<em>r</em> = 1.0).</li>
+            <li><strong>Explicit Tiers:</strong> Adjust <em>R Start</em> and <em>R End</em> to lock endpoints to concentric circles.</li>
+            <li><strong>Stepped Finials:</strong> Set <em>R End</em> of a lower branch to match <em>R Start</em> of an upper branch for seamless connectivity.</li>
+            <li><strong>Phase Clocking:</strong> Use the Phase slider to interlace motifs around the medallion without breaking symmetry.</li>
+          </ul>
+
+          <h3>Lineage & Credits</h3>
+          <div class="credit-badge">
+            <p style="margin-bottom:6px; font-weight:600; color:#fcd34d;">Originating Mathematics & Architecture</p>
+            <p>(C)<strong>John Wilson</strong> 2026.</p>
+            <p>Original codebase developed for the Open University mass-collaboration initiative:</p>
+            <p style="font-style:italic; color:#e7e5e4;">Beginning Graphics Programming with Processing 3</p>
+            <p style="margin:0; font-size:11px; color:#a8a29e;">A collaborative pedagogical work created with over 40 students and faculty members from the Open University Mathematics and Computing department (2013, 2019).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <input type="file" id="fileInput" accept=".json" style="display: none;" />
+    <div id="sketch-holder"></div>
+  </div>
+
+  <script src="morris_taster_v9.js"></script>
+</body>
+</html>
+
+
