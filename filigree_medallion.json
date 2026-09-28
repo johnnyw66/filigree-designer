@@ -1,0 +1,122 @@
+{
+  "project": "MorrisFiligree",
+  "version": 9,
+  "author": "John Wilson",
+  "bookReference": "Beginning Graphics Programming with Processing 3 (Open University)",
+  "exportedAt": "2026-09-28T21:43:48.498Z",
+  "ringsState": {
+    "innerHub": {
+      "enabled": true,
+      "weight": 2.5
+    },
+    "outerRim": {
+      "enabled": true,
+      "weight": 2.5
+    },
+    "collars": [
+      {
+        "normR": 0.4,
+        "weight": 2,
+        "enabled": true
+      },
+      {
+        "normR": 0.7,
+        "weight": 2,
+        "enabled": true
+      }
+    ]
+  },
+  "textState": {
+    "mode": "arc",
+    "content": "VICTORIA & ALBERT",
+    "fontSize": 13,
+    "tracking": 3,
+    "arcStartDeg": 270
+  },
+  "curves": [
+    {
+      "name": "Center Spire",
+      "folds": 5,
+      "phase": 0,
+      "isReflected": true,
+      "rStart": 0.96,
+      "rEnd": 1,
+      "visible": true,
+      "colorIdx": 0,
+      "points": {
+        "start": {
+          "x": 257,
+          "y": 52.40000000000002
+        },
+        "ctl1": {
+          "x": 117,
+          "y": 101.5
+        },
+        "ctl2": {
+          "x": 187,
+          "y": 368.5
+        },
+        "end": {
+          "x": 257,
+          "y": 30
+        }
+      }
+    },
+    {
+      "name": "Broad Base Tier",
+      "folds": 17,
+      "phase": 0,
+      "isReflected": true,
+      "rStart": 0,
+      "rEnd": 0.4,
+      "visible": true,
+      "colorIdx": 1,
+      "points": {
+        "start": {
+          "x": 250,
+          "y": 590
+        },
+        "ctl1": {
+          "x": 410,
+          "y": 506
+        },
+        "ctl2": {
+          "x": 370,
+          "y": 394
+        },
+        "end": {
+          "x": 250,
+          "y": 366
+        }
+      }
+    },
+    {
+      "name": "Mid Barb Tier",
+      "folds": 12,
+      "phase": 0,
+      "isReflected": true,
+      "rStart": 0.4,
+      "rEnd": 0.7,
+      "visible": true,
+      "colorIdx": 2,
+      "points": {
+        "start": {
+          "x": 236,
+          "y": 366
+        },
+        "ctl1": {
+          "x": 370,
+          "y": 270.5
+        },
+        "ctl2": {
+          "x": 110,
+          "y": 291.5
+        },
+        "end": {
+          "x": 250,
+          "y": 198.00000000000003
+        }
+      }
+    }
+  ]
+}
